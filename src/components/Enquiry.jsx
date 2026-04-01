@@ -19,9 +19,22 @@ const Enquiry = () => {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+
+    const form = e.target
+    const formData = new FormData(form)
+
+    try {
+      await fetch("/", {
+        method: "POST",
+        body: formData
+      })
+
+      setSubmitted(true)
+    } catch (error) {
+      console.error("Submission error:", error)
+    }
   }
 
   return (
@@ -102,7 +115,14 @@ const Enquiry = () => {
                   <>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Book your onboarding call</h2>
                     <p className="text-gray-600 mb-6">Share your details and we'll get in touch.</p>
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form
+                      name="enquiry"
+                      method="POST"
+                      data-netlify="true"
+                      onSubmit={handleSubmit}
+                      className="space-y-5"
+                    >
+                      <input type="hidden" name="form-name" value="enquiry" />
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full name *</label>
                         <input
